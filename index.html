@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <title>Matrix Rain Generator — Next-Gen 3D Digital Rain · Free · 4K/5K Export</title>
+    <meta name="description" content="Free next-gen Matrix digital rain: volumetric 3D with GPU bloom, 11 themes, your own message, and crisp 4K/5K wallpaper + video export. Runs in your browser, or download the Windows app with live-wallpaper & screensaver." />
+    <meta name="keywords" content="matrix rain, matrix digital rain, matrix code rain, matrix rain generator, matrix wallpaper, matrix screensaver, matrix live wallpaper, matrix rain 4k, matrix code" />
+    <meta name="author" content="Matrix // Next-Gen" />
+    <meta name="theme-color" content="#00110a" />
+    <link rel="canonical" href="https://makandev.github.io/Matrix-Master-2-Pro/" />
+
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Matrix // Next-Gen — 3D Matrix Rain Generator" />
+    <meta property="og:description" content="Volumetric 3D Matrix rain with bloom, 11 themes, custom messages, and 4K/5K wallpaper & video export. Free in your browser." />
+    <meta property="og:url" content="https://makandev.github.io/Matrix-Master-2-Pro/" />
+    <meta property="og:image" content="./og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Matrix // Next-Gen — 3D Matrix Rain Generator" />
+    <meta name="twitter:description" content="Volumetric 3D Matrix rain with bloom, 11 themes, custom messages, and 4K/5K export. Free." />
+    <meta name="twitter:image" content="./og-image.png" />
+
+    <!-- Structured data for rich results -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Matrix // Next-Gen",
+      "applicationCategory": "MultimediaApplication",
+      "operatingSystem": "Web, Windows",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "description": "Next-gen volumetric 3D Matrix digital rain with GPU bloom, 11 themes, custom message reveal, audio reactivity, and 4K/5K wallpaper & video export."
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "What is Matrix digital rain?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Matrix digital rain is the falling green code effect from The Matrix films — columns of glowing glyphs cascading down a black screen. This generator renders it in real volumetric 3D." } },
+        { "@type": "Question", "name": "Is it free?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. It runs free in your browser, and the downloadable Windows app is free too." } },
+        { "@type": "Question", "name": "Can I export a 4K wallpaper?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Export a lossless PNG at your exact monitor resolution up to 5K, ultrawide and phone-portrait, with 2x supersampling — plus high-bitrate WebM video." } },
+        { "@type": "Question", "name": "How do I set it as a live wallpaper or screensaver?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Download the free Windows app. It runs as a normal window, fullscreen, an animated desktop wallpaper behind your icons, or a screensaver (rename to .scr)." } },
+        { "@type": "Question", "name": "Does the microphone audio leave my device?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Audio reactivity is processed entirely on your device; nothing is uploaded." } }
+      ]
+    }
+    </script>
+  </head>
+  <body>
+    <div id="app">
+      <canvas id="scene"></canvas>
+      <div id="scanlines"></div>
+      <div id="vignette"></div>
+    </div>
+
+    <!-- Crawlable content (visually an info panel; present in the HTML for SEO) -->
+    <article id="about" aria-label="About Matrix Next-Gen">
+      <div class="about-card">
+        <button class="about-close" aria-label="Schließen">✕</button>
+        <h1>Matrix // Next-Gen — 3D Matrix Rain Generator</h1>
+        <p>A free, next-generation <strong>Matrix digital rain</strong> generator rendered in real
+        volumetric <strong>3D</strong> with GPU bloom — not a flat 2D clone. Choose from 11 themes,
+        make the rain spell <strong>your own message</strong>, react it to music, and export a
+        pixel-perfect <strong>4K/5K wallpaper</strong> or video for any monitor size.</p>
+        <h2>Features</h2>
+        <ul>
+          <li>Volumetric 3D rain with depth, parallax and bloom</li>
+          <li>11 themes incl. CRT phosphor, thermal and holographic</li>
+          <li>Authentic mirrored-katakana film glyphs</li>
+          <li>Make-your-own-message decode reveal + shareable links</li>
+          <li>Audio-reactive (microphone or your music)</li>
+          <li>Lossless 4K/5K/ultrawide/portrait wallpaper &amp; WebM export</li>
+          <li>Free Windows app: window, fullscreen, live wallpaper &amp; screensaver</li>
+        </ul>
+        <h2>FAQ</h2>
+        <h3>What is Matrix digital rain?</h3>
+        <p>The iconic falling green code from The Matrix — cascading columns of glowing glyphs.</p>
+        <h3>Is it free?</h3>
+        <p>Yes, in the browser and as a Windows download.</p>
+        <h3>How do I set a live wallpaper or screensaver?</h3>
+        <p>Download the Windows app; it runs as a desktop wallpaper or a screensaver.</p>
+        <p class="about-hint">Taste <span class="hint-k">i</span> öffnet/schließt diese Info · <span class="hint-k">?</span> zeigt alle Tastenkürzel</p>
+      </div>
+    </article>
+
+    <script type="module" src="/src/main.ts"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
+      }
+    </script>
+  </body>
+</html>

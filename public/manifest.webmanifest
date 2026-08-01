@@ -1,0 +1,14 @@
+{
+  "name": "Matrix // Next-Gen",
+  "short_name": "MatrixNG",
+  "description": "Next-gen volumetric 3D Matrix digital rain generator with 4K/5K wallpaper export.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#000000",
+  "theme_color": "#00110a",
+  "icons": [
+    { "src": "./favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

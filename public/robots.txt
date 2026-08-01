@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://makandev.github.io/Matrix-Master-2-Pro/sitemap.xml
