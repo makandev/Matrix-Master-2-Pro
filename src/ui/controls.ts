@@ -1,10 +1,12 @@
 import { Store, THEMES, PRESETS, DEFAULT_CONFIG, type Config, type GlyphSet } from "../engine/config";
+import { MOODS } from "../engine/synth";
 
 export interface UIHooks {
   toast: (msg: string) => void;
   openExport: () => void;
   audioMic: () => Promise<void> | void;
   audioFile: (f: File) => Promise<void> | void;
+  audioSynth: (mood: string) => void;
   audioOff: () => void;
   audioActive: () => boolean;
 }
@@ -218,10 +220,21 @@ export function buildUI(store: Store, hooks: UIHooks): void {
     if (fileInput.files && fileInput.files[0]) hooks.audioFile(fileInput.files[0]);
   };
   fileLabel.appendChild(fileInput);
-  const audioOffBtn = el("button", "toggle-chip", "Aus");
-  audioOffBtn.onclick = () => hooks.audioOff();
   secAudio.appendChild(micBtn);
   secAudio.appendChild(fileLabel);
+  // Built-in generative music moods (the rain reacts to them).
+  const moodLabel = el("div", "sub-label", "Generative Musik");
+  secAudio.appendChild(moodLabel);
+  const moodChips = el("div", "chips");
+  for (const m of Object.values(MOODS)) {
+    const b = el("button", "chip", "♫ " + m.name);
+    b.dataset.mood = m.id;
+    b.onclick = () => hooks.audioSynth(m.id);
+    moodChips.appendChild(b);
+  }
+  secAudio.appendChild(moodChips);
+  const audioOffBtn = el("button", "toggle-chip", "⏹ Audio aus");
+  audioOffBtn.onclick = () => hooks.audioOff();
   secAudio.appendChild(audioOffBtn);
 
   // Rain direction (4-way)

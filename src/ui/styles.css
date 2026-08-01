@@ -155,6 +155,7 @@ input[type="range"]::-webkit-slider-thumb {
 .swatch.active { border-color: #fff; box-shadow: 0 0 0 1px #fff, 0 0 16px -2px currentColor; }
 
 /* preset chips */
+.sub-label { font-size: 11px; color: var(--text-dim); margin: 12px 0 6px; letter-spacing: 0.5px; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip {
   padding: 7px 12px; font-size: 12px; border-radius: 20px;

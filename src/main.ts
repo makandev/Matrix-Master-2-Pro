@@ -45,6 +45,10 @@ buildUI(store, {
     try { await audio.enableFile(f); toast("♪ Musik läuft"); }
     catch { toast("Datei konnte nicht geladen werden"); }
   },
+  audioSynth: (mood) => {
+    try { audio.enableSynth(mood as never); toast("♫ Generative Musik"); }
+    catch { toast("Audio konnte nicht starten"); }
+  },
   audioOff: () => { audio.disable(); engine.audioLevels = null; toast("Audio aus"); },
   audioActive: () => audio.active,
 });
@@ -59,4 +63,4 @@ function loop() {
 loop();
 
 // Dev-only inspection handle (stripped from production builds by the guard).
-if (import.meta.env.DEV) (window as any).__mx = { engine, store, message };
+if (import.meta.env.DEV) (window as any).__mx = { engine, store, message, audio };

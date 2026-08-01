@@ -1,3 +1,5 @@
+import { GenerativeSynth, type MoodId } from "./synth";
+
 export interface AudioLevels {
   bass: number;
   mid: number;
@@ -13,8 +15,9 @@ export class AudioReactive {
   private data?: Uint8Array<ArrayBuffer>;
   private audioEl?: HTMLAudioElement;
   private stream?: MediaStream;
+  private synth?: GenerativeSynth;
   active = false;
-  source: "none" | "mic" | "file" = "none";
+  source: "none" | "mic" | "file" | "synth" = "none";
 
   private ensure() {
     if (this.ctx) return;
@@ -50,6 +53,23 @@ export class AudioReactive {
     this.source = "file";
   }
 
+  // Start the built-in generative music (dark cyberpunk moods). Switching mood
+  // while running is smooth; the rain reacts because the synth feeds the analyser.
+  enableSynth(mood: MoodId) {
+    this.ensure();
+    if (this.source === "synth" && this.synth?.running) {
+      this.synth.setMood(mood);
+      return;
+    }
+    this.reset();
+    if (!this.synth) this.synth = new GenerativeSynth(this.ctx!, this.analyser!);
+    this.analyser!.connect(this.ctx!.destination); // hear it
+    this.ctx!.resume();
+    this.synth.start(mood);
+    this.active = true;
+    this.source = "synth";
+  }
+
   disable() {
     this.reset();
     this.active = false;
@@ -57,6 +77,7 @@ export class AudioReactive {
   }
 
   private reset() {
+    this.synth?.stop();
     if (this.audioEl) {
       this.audioEl.pause();
       this.audioEl = undefined;

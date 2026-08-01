@@ -13,3 +13,4 @@ desktop/obj/
 .DS_Store
 *.log
 .vscode/
+LAUNCH.md
