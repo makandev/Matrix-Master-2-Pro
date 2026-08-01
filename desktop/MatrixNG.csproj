@@ -9,6 +9,7 @@
     <AssemblyName>MatrixNG</AssemblyName>
     <RootNamespace>MatrixNG</RootNamespace>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <ApplicationIcon>app.ico</ApplicationIcon>
     <!-- .scr is just a renamed .exe; we produce both from one publish. -->
     <Version>0.1.0</Version>
     <Product>Matrix // Next-Gen</Product>

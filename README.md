@@ -2,8 +2,8 @@
 
 A free, next-generation **Matrix digital rain** generator rendered in real volumetric **3D** with GPU bloom — not a flat 2D clone. Pick from 11 themes, make the rain spell **your own message**, react it to music, and export a pixel-perfect **4K/5K wallpaper** or video for any monitor.
 
-**▶ Live demo:** _(add your GitHub Pages URL here after deploy)_
-**⤓ Windows app:** _(add release link — live wallpaper & screensaver)_
+**▶ Live demo:** https://makandev.github.io/Matrix-Master-2-Pro/
+**⤓ Windows app:** run `Build-Release.bat` for a self-contained `MatrixNG.exe` (live wallpaper & screensaver, no .NET install needed) — or attach it to a GitHub Release.
 
 ## Features
 

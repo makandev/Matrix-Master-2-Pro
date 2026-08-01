@@ -120,6 +120,7 @@ internal sealed class MatrixForm : Form
         Text = "Matrix // Next-Gen";
         BackColor = Color.Black;
         DoubleBuffered = true;
+        try { Icon = System.Drawing.Icon.ExtractAssociatedIcon(Environment.ProcessPath!); } catch { /* ignore */ }
 
         _immersive = mode is "Fullscreen" or "Screensaver" or "Wallpaper" or "Preview";
         _exitOnInput = mode is "Screensaver";
