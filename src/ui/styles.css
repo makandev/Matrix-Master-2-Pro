@@ -276,6 +276,12 @@ textarea.custom:focus { outline: none; border-color: var(--accent-dim); }
 .hint-k { font-family: var(--mono); background: rgba(255,255,255,0.08); border: 1px solid var(--border);
   border-radius: 5px; padding: 1px 6px; font-size: 11px; }
 
+/* ---------- asteroids mini-game overlay ---------- */
+.game-canvas {
+  position: fixed; inset: 0; z-index: 10; pointer-events: none; display: none;
+}
+.game-canvas.on { display: block; }
+
 /* ---------- about / info panel (SEO content) ---------- */
 #about {
   position: fixed; inset: 0; z-index: 48; display: none;

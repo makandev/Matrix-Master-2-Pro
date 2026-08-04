@@ -5,6 +5,7 @@ import { buildUI } from "./ui/controls";
 import { MessageReveal } from "./ui/message";
 import { Exporter } from "./ui/exporter";
 import { AudioReactive } from "./engine/audio";
+import { AsteroidsGame } from "./ui/asteroids";
 
 const canvas = document.getElementById("scene") as HTMLCanvasElement;
 const store = new Store();
@@ -33,6 +34,7 @@ const message = new MessageReveal(store);
 setTimeout(() => message.flash(store.get().message || "WAKE UP"), 900);
 const exporter = new Exporter(engine, toast);
 const audio = new AudioReactive();
+const game = new AsteroidsGame();
 
 buildUI(store, {
   toast,
@@ -51,12 +53,18 @@ buildUI(store, {
   },
   audioOff: () => { audio.disable(); engine.audioLevels = null; toast("Audio aus"); },
   audioActive: () => audio.active,
+  toggleGame: () => { game.toggle(); toast(game.running ? "🎮 Asteroids — Esc beendet" : "Spiel beendet"); },
+  isGameActive: () => game.running,
 });
 
 window.addEventListener("resize", () => engine.resize());
 
 function loop() {
-  engine.audioLevels = audio.levels();
+  const c = store.get();
+  const L = c.audioReactive ? audio.levels() : null;
+  engine.audioLevels = L
+    ? { bass: L.bass * c.audioIntensity, mid: L.mid * c.audioIntensity, treble: L.treble * c.audioIntensity, level: L.level * c.audioIntensity }
+    : null;
   engine.frame();
   requestAnimationFrame(loop);
 }

@@ -9,6 +9,8 @@ export interface UIHooks {
   audioSynth: (mood: string) => void;
   audioOff: () => void;
   audioActive: () => boolean;
+  toggleGame: () => void;
+  isGameActive: () => boolean;
 }
 
 interface Binder { update: () => void; }
@@ -57,6 +59,7 @@ const ICONS: Record<string, string> = {
   cmd: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3z"/></svg>',
   link: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>',
   help: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.8.4-1 .9-1 1.7"/><circle cx="12" cy="17" r="0.6" fill="currentColor"/></svg>',
+  game: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l7 4v6l-7 4-7-4V7z" transform="rotate(0 12 12)"/><path d="M12 3v18M5 7l14 6"/></svg>',
 };
 
 const SHORTCUTS: [string, string][] = [
@@ -68,6 +71,7 @@ const SHORTCUTS: [string, string][] = [
   ["P", "Export / Download"],
   ["C", "Teilbaren Link kopieren"],
   ["Strg + K", "Befehls-Palette"],
+  ["G", "Asteroids-Spiel"],
   ["?", "Diese Hilfe"],
 ];
 
@@ -233,6 +237,32 @@ export function buildUI(store: Store, hooks: UIHooks): void {
     moodChips.appendChild(b);
   }
   secAudio.appendChild(moodChips);
+
+  // Rain-reaction toggle + strength (clearly visible on/off).
+  secAudio.appendChild(el("div", "sub-label", "Regen reagiert auf Audio"));
+  const reactToggle = el("button", "toggle-chip", "");
+  reactToggle.onclick = () => store.set("audioReactive", !store.get().audioReactive);
+  secAudio.appendChild(reactToggle);
+  const intRow = el("div", "row");
+  intRow.innerHTML = `<div class="label"><span>Reaktions-Stärke</span><span class="val"></span></div>`;
+  const intInput = el("input") as HTMLInputElement;
+  intInput.type = "range"; intInput.min = "0"; intInput.max = "1"; intInput.step = "0.05";
+  intInput.oninput = () => store.set("audioIntensity", parseFloat(intInput.value));
+  intRow.appendChild(intInput);
+  secAudio.appendChild(intRow);
+  binders.push({
+    update: () => {
+      const on = store.get().audioReactive;
+      reactToggle.classList.toggle("active", on);
+      reactToggle.textContent = on ? "✓ Regen reagiert" : "✕ Regen reagiert NICHT";
+      const v = store.get().audioIntensity;
+      intInput.value = String(v);
+      (intRow.querySelector(".val") as HTMLElement).textContent = v.toFixed(2);
+      intInput.style.setProperty("--fill", v * 100 + "%");
+      intRow.style.opacity = on ? "1" : "0.4";
+    },
+  });
+
   const audioOffBtn = el("button", "toggle-chip", "⏹ Audio aus");
   audioOffBtn.onclick = () => hooks.audioOff();
   secAudio.appendChild(audioOffBtn);
@@ -281,6 +311,7 @@ export function buildUI(store: Store, hooks: UIHooks): void {
   mkBtn("link", "Link kopieren (C)", () => shareLink());
   mkBtn("cmd", "Befehle (Ctrl+K)", () => openPalette());
   mkBtn("help", "Tastenkürzel (?)", () => toggleCheat());
+  mkBtn("game", "Asteroids spielen (G)", () => hooks.toggleGame());
   dock.appendChild(el("div", "sep"));
   mkBtn("full", "Vollbild (F)", () => toggleFullscreen());
   root.appendChild(dock);
@@ -393,7 +424,9 @@ export function buildUI(store: Store, hooks: UIHooks): void {
     if (pb.classList.contains("open")) return;
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); openPalette(); return; }
     if (e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLInputElement) return;
+    if (hooks.isGameActive()) return; // game owns the keys while playing
     switch (e.key.toLowerCase()) {
+      case "g": hooks.toggleGame(); break;
       case " ": e.preventDefault(); store.set("paused", !store.get().paused); break;
       case "f": toggleFullscreen(); break;
       case "f11": e.preventDefault(); toggleFullscreen(); break;

@@ -137,6 +137,8 @@ export interface Config {
   waveX: number; // 0..1 horizontal ripple amount
   waveY: number; // 0..1 vertical ripple amount
   quotesEnabled: boolean; // periodically flash atmospheric quotes
+  audioReactive: boolean; // whether the rain reacts to audio
+  audioIntensity: number; // 0..1 strength of the audio reaction
   cameraDrift: number; // automatic camera sway amount
   mouseParallax: number; // how much the mouse tilts the view
   brightness: number; // global exposure
@@ -169,6 +171,8 @@ export const DEFAULT_CONFIG: Config = {
   waveX: 0,
   waveY: 0,
   quotesEnabled: false,
+  audioReactive: true,
+  audioIntensity: 1,
   cameraDrift: 0.5,
   mouseParallax: 0.5,
   brightness: 1.12,
