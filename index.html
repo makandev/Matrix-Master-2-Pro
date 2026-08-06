@@ -97,8 +97,18 @@
 
     <script type="module" src="/src/main.ts"></script>
     <script>
+      // The native desktop app serves this from the virtual host "matrix.app".
+      // A service worker there gives no benefit (files are already local) and
+      // its cache can serve a stale index that points at an old, deleted bundle
+      // hash after an app update — a black screen. So: register the SW only on
+      // the real web, and proactively unregister/clear any SW inside the app.
       if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
+        if (location.hostname === "matrix.app") {
+          navigator.serviceWorker.getRegistrations().then((rs) => rs.forEach((r) => r.unregister()));
+          if (window.caches) caches.keys().then((ks) => ks.forEach((k) => caches.delete(k)));
+        } else {
+          window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
+        }
       }
     </script>
   </body>
