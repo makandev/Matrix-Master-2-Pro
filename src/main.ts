@@ -71,4 +71,4 @@ function loop() {
 loop();
 
 // Dev-only inspection handle (stripped from production builds by the guard).
-if (import.meta.env.DEV) (window as any).__mx = { engine, store, message, audio };
+if (import.meta.env.DEV) (window as any).__mx = { engine, store, message, audio, game };
