@@ -42,6 +42,8 @@ export class AsteroidsGame {
   private bt = 1; // meter 0..1
   private btActive = false;
   private ac?: AudioContext;
+  private touch!: HTMLDivElement;
+  private isTouch = matchMedia("(pointer: coarse)").matches || "ontouchstart" in window || navigator.maxTouchPoints > 0;
   running = false;
 
   constructor() {
@@ -53,28 +55,75 @@ export class AsteroidsGame {
     window.addEventListener("keydown", this.onKey, { capture: true });
     window.addEventListener("keyup", this.onKey, { capture: true });
     window.addEventListener("resize", () => this.resize());
+    this.buildTouch();
+  }
+
+  // On-screen controls for phones — drive the same key flags as the keyboard.
+  private buildTouch() {
+    const t = document.createElement("div");
+    t.className = "game-touch";
+    t.innerHTML = `
+      <button class="gt-btn gt-left" aria-label="links">◀</button>
+      <button class="gt-btn gt-right" aria-label="rechts">▶</button>
+      <button class="gt-btn gt-thrust" aria-label="Schub">▲</button>
+      <button class="gt-btn gt-fire" aria-label="feuern">✦</button>
+      <button class="gt-btn gt-slow" aria-label="Zeitlupe">🕶</button>
+      <button class="gt-btn gt-exit" aria-label="beenden">✕</button>`;
+    document.getElementById("app")!.appendChild(t);
+    this.touch = t;
+    const bind = (sel: string, key: keyof typeof this.keys) => {
+      const b = t.querySelector(sel) as HTMLElement;
+      const on = (e: Event) => { e.preventDefault(); this.keys[key] = true; };
+      const off = (e: Event) => { e.preventDefault(); this.keys[key] = false; };
+      b.addEventListener("pointerdown", on);
+      b.addEventListener("pointerup", off);
+      b.addEventListener("pointerleave", off);
+      b.addEventListener("pointercancel", off);
+    };
+    bind(".gt-left", "left");
+    bind(".gt-right", "right");
+    bind(".gt-thrust", "up");
+    bind(".gt-slow", "slow");
+    // Fire doubles as "restart" on the game-over screen (no Enter key on phones).
+    const fire = t.querySelector(".gt-fire") as HTMLElement;
+    fire.addEventListener("pointerdown", (e) => { e.preventDefault(); this.over ? this.start() : (this.keys.fire = true); });
+    fire.addEventListener("pointerup", (e) => { e.preventDefault(); this.keys.fire = false; });
+    fire.addEventListener("pointerleave", () => (this.keys.fire = false));
+    (t.querySelector(".gt-exit") as HTMLElement).addEventListener("pointerdown", (e) => { e.preventDefault(); this.stop(); });
   }
 
   toggle() { this.running ? this.stop() : this.start(); }
 
   start() {
-    if (this.running) return;
+    if (this.running) {
+      if (this.over) this.reset(); // restart from the game-over screen (loop already runs)
+      return;
+    }
     this.running = true;
     this.resize();
     this.canvas.classList.add("on");
+    if (this.isTouch) this.touch.classList.add("on");
+    document.getElementById("app")!.classList.add("gaming");
+    this.reset();
+    this.last = performance.now();
+    this.raf = requestAnimationFrame(this.frame);
+  }
+
+  private reset() {
     this.score = 0; this.lives = 3; this.over = false; this.newRecord = false;
     this.wave = 0; this.combo = 0; this.comboTimer = 0; this.bt = 1; this.btActive = false;
     this.bullets = []; this.enemyBullets = []; this.rocks = []; this.powerups = []; this.boss = null;
+    this.popups = []; this.bossDefeatedFlash = 0;
     this.ship = { x: this.w / 2, y: this.h / 2, a: -Math.PI / 2, vx: 0, vy: 0, alive: true, respawn: 0, blink: 2, shield: 0, triple: 0, rapid: 0 };
     this.nextWave();
-    this.last = performance.now();
-    this.raf = requestAnimationFrame(this.frame);
   }
 
   stop() {
     this.running = false;
     cancelAnimationFrame(this.raf);
     this.canvas.classList.remove("on");
+    this.touch.classList.remove("on");
+    document.getElementById("app")!.classList.remove("gaming");
     this.keys = { left: false, right: false, up: false, fire: false, slow: false };
   }
 
