@@ -1,4 +1,4 @@
-import { Store, THEMES, PRESETS, DEFAULT_CONFIG, type Config, type GlyphSet } from "../engine/config";
+import { Store, THEMES, PRESETS, DEFAULT_CONFIG, presetPatch, type Config, type GlyphSet } from "../engine/config";
 import { MOODS } from "../engine/synth";
 
 export interface UIHooks {
@@ -117,7 +117,7 @@ export function buildUI(store: Store, hooks: UIHooks): void {
   const chips = el("div", "chips");
   for (const name of Object.keys(PRESETS)) {
     const c = el("button", "chip", name);
-    c.onclick = () => { store.patch({ ...PRESETS[name] }); hooks.toast(`Preset · ${name}`); };
+    c.onclick = () => { store.patch(presetPatch(name)); hooks.toast(`Preset · ${name}`); };
     chips.appendChild(c);
   }
   const resetChip = el("button", "chip", "↺ Reset");
@@ -331,7 +331,7 @@ export function buildUI(store: Store, hooks: UIHooks): void {
 
   type Cmd = { label: string; hint?: string; run: () => void };
   const commands: Cmd[] = [
-    ...Object.keys(PRESETS).map((n) => ({ label: `Preset: ${n}`, hint: "preset", run: () => { store.patch({ ...PRESETS[n] }); hooks.toast(`Preset · ${n}`); } })),
+    ...Object.keys(PRESETS).map((n) => ({ label: `Preset: ${n}`, hint: "preset", run: () => { store.patch(presetPatch(n)); hooks.toast(`Preset · ${n}`); } })),
     ...THEMES.map((t) => ({ label: `Farbwelt: ${t.name}`, hint: "theme", run: () => store.set("themeId", t.id) })),
     ...GLYPH_SETS.map((g) => ({ label: `Zeichen: ${g.label}`, hint: "glyphs", run: () => store.set("glyphSet", g.id) })),
     { label: "Pause / Weiter", hint: "space", run: () => store.set("paused", !store.get().paused) },

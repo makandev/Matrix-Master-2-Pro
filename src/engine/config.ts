@@ -180,29 +180,88 @@ export const DEFAULT_CONFIG: Config = {
   paused: false,
 };
 
-// A few curated presets the UI exposes as one-click "moods".
+// Curated one-click "moods". Every preset here was rendered and visually
+// checked before inclusion, so each one is a good-looking, distinct starting
+// point. Ordered green → warm → hot → cool → exotic for a tidy chip row.
 export const PRESETS: Record<string, Partial<Config>> = {
   "Cinematic": {
     themeId: "classic", glyphSet: "matrix", density: 650, fallSpeed: 7,
     bloomStrength: 1.05, bloomRadius: 0.6, trailLength: 26, cameraDrift: 0.6, flicker: 0.15,
   },
-  "Cyber Storm": {
-    themeId: "ice", glyphSet: "katakana", density: 1200, fallSpeed: 16,
-    bloomStrength: 1.2, bloomRadius: 0.45, trailLength: 16, cameraDrift: 0.9, flicker: 0.28, scrambleRate: 12,
+  "Downpour": {
+    themeId: "classic", glyphSet: "matrix", density: 1300, fallSpeed: 16, trailLength: 14,
+    glyphSize: 0.55, bloomStrength: 0.9, bloomThreshold: 0.35, brightness: 1.15, flicker: 0.15, depth: 80, scrambleRate: 9,
   },
-  "Deep Dive": {
-    themeId: "ghost", glyphSet: "matrix", density: 900, fallSpeed: 6, depth: 140,
-    bloomStrength: 1.0, bloomRadius: 0.7, trailLength: 30, cameraDrift: 0.35, mouseParallax: 0.8,
+  "Whisper": {
+    themeId: "classic", glyphSet: "matrix", density: 430, fallSpeed: 4.5, trailLength: 34,
+    glyphSize: 0.7, bloomStrength: 0.7, bloomThreshold: 0.3, brightness: 1.0, flicker: 0.06, depth: 110, cameraDrift: 0.35, scrambleRate: 4,
+  },
+  "Binary Storm": {
+    themeId: "classic", glyphSet: "binary", density: 1200, fallSpeed: 18, trailLength: 16,
+    glyphSize: 0.5, bloomStrength: 0.9, brightness: 1.15, scrambleRate: 12,
+  },
+  "Retro CRT": {
+    themeId: "crt", glyphSet: "code", density: 600, fallSpeed: 8, trailLength: 20,
+    glyphSize: 0.7, bloomStrength: 0.75, flicker: 0.12, scrambleRate: 5, depth: 70,
   },
   "Terminal": {
     themeId: "amber", glyphSet: "latin", density: 480, fallSpeed: 8,
     bloomStrength: 0.55, bloomRadius: 0.4, trailLength: 18, flicker: 0.1, scrambleRate: 4,
   },
-  "Meltdown": {
-    themeId: "redalert", glyphSet: "digits", density: 1000, fallSpeed: 22,
-    bloomStrength: 1.3, bloomRadius: 0.5, trailLength: 14, flicker: 0.4, scrambleRate: 16, cameraDrift: 1.1,
+  "Gold Vault": {
+    themeId: "gold", glyphSet: "matrix", density: 640, fallSpeed: 7, trailLength: 24,
+    glyphSize: 0.66, bloomStrength: 0.95, bloomThreshold: 0.35, flicker: 0.08, depth: 95, cameraDrift: 0.45, brightness: 1.1,
+  },
+  "Inferno": {
+    themeId: "redalert", glyphSet: "digits", density: 1300, fallSpeed: 19, trailLength: 18,
+    bloomStrength: 1.35, bloomRadius: 0.55, bloomThreshold: 0.26, flicker: 0.3, scrambleRate: 14, depth: 85, brightness: 1.45,
+  },
+  "Thermal": {
+    themeId: "thermal", glyphSet: "digits", density: 900, fallSpeed: 10, trailLength: 20,
+    bloomStrength: 1.0, bloomThreshold: 0.3, depth: 100, brightness: 1.1,
+  },
+  "Vaporwave": {
+    themeId: "synth", glyphSet: "latin", density: 960, fallSpeed: 8, trailLength: 24,
+    waveX: 0.3, waveY: 0.12, bloomStrength: 1.15, bloomRadius: 0.6, bloomThreshold: 0.3, brightness: 1.28, cameraDrift: 0.6,
+  },
+  "Deep Space": {
+    themeId: "ghost", glyphSet: "matrix", density: 1150, fallSpeed: 5.5, trailLength: 30, depth: 120,
+    cameraDrift: 0.45, mouseParallax: 0.85, bloomStrength: 1.15, bloomRadius: 0.6, bloomThreshold: 0.26, brightness: 1.4,
+  },
+  "Hologram": {
+    themeId: "holo", glyphSet: "matrix", density: 1150, fallSpeed: 6.5, trailLength: 26, depth: 120,
+    cameraDrift: 0.7, mouseParallax: 0.9, bloomStrength: 1.1, bloomThreshold: 0.26, brightness: 1.35,
+  },
+  "Glacier": {
+    themeId: "ice", glyphSet: "katakana", density: 720, fallSpeed: 6, trailLength: 26,
+    glyphSize: 0.78, depth: 130, bloomStrength: 1.0, bloomRadius: 0.6, cameraDrift: 0.5, mouseParallax: 0.7, brightness: 1.05,
+  },
+  "Overclock": {
+    themeId: "ice", glyphSet: "matrix", density: 1400, fallSpeed: 22, trailLength: 16,
+    bloomStrength: 1.25, bloomRadius: 0.5, flicker: 0.28, scrambleRate: 14, cameraDrift: 0.9, depth: 90,
+  },
+  "Zen": {
+    themeId: "mono", glyphSet: "katakana", density: 520, fallSpeed: 4, trailLength: 30,
+    glyphSize: 0.72, bloomStrength: 0.75, flicker: 0.05, depth: 110, cameraDrift: 0.3, brightness: 1.05,
   },
 };
+
+// The visual fields a preset governs. Applying a preset resets these to their
+// defaults first, so a preset always yields the exact look it was tuned for —
+// regardless of whatever the user had dialled in beforehand.
+const PRESET_KEYS: (keyof Config)[] = [
+  "themeId", "glyphSet", "density", "fallSpeed", "glyphSize", "trailLength", "depth",
+  "bloomStrength", "bloomRadius", "bloomThreshold", "flicker", "scrambleRate",
+  "waveX", "waveY", "cameraDrift", "mouseParallax", "brightness",
+];
+
+// Build the full patch for a preset: default visuals overlaid with the preset's
+// overrides. User prefs (message, audio, direction, glyph message…) are left as-is.
+export function presetPatch(name: string): Partial<Config> {
+  const base: Partial<Config> = {};
+  for (const k of PRESET_KEYS) (base as any)[k] = DEFAULT_CONFIG[k];
+  return { ...base, ...PRESETS[name] };
+}
 
 type Listener = (cfg: Config, changed: keyof Config | "*") => void;
 
